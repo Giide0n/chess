@@ -23,6 +23,7 @@ export const EMPTY_BOARD: BoardState = [
 	[undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined],
 	[undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined],
 	[undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined],
+	[undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined],
 	[undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined]
 ];
 
@@ -38,6 +39,7 @@ export const STANDARD_BOARD: BoardState = [
 		BLACK_ROOK
 	],
 	[BLACK_PAWN, BLACK_PAWN, BLACK_PAWN, BLACK_PAWN, BLACK_PAWN, BLACK_PAWN, BLACK_PAWN, BLACK_PAWN],
+	[undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined],
 	[undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined],
 	[undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined],
 	[undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined],
