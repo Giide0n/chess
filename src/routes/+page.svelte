@@ -1,15 +1,18 @@
 <script lang="ts">
 	import Piece from './Piece.svelte';
-	import { STANDARD_BOARD } from './Boards';
 	import { onMount } from 'svelte';
 	import { Board } from './Board';
+	import type { Coordinates } from './Coordinates';
+	import type { BoardState } from './Boards';
 
-	let board = STANDARD_BOARD;
-	let selected: any = null;
-	let selectedCoordinates: number[];
+	const board: Board = new Board();
 
-	const getTileCoordinates = (e): number[] => {
-		return document
+	let boardState: BoardState = board.getBoardState();
+	let selected: unknown = undefined;
+	let selectedCoordinates: Coordinates | undefined = undefined;
+
+	const getTileCoordinates = (e): Coordinates => {
+		const coordinates = document
 			.elementsFromPoint(e.clientX, e.clientY)
 			.find((el) => {
 				return el.classList.contains('tile');
@@ -17,6 +20,7 @@
 			.getAttribute('coordinates')
 			.split(',')
 			.map((el) => parseInt(el));
+		return { row: coordinates[0], column: coordinates[1] };
 	};
 
 	const dragStart = (e) => {
@@ -43,10 +47,8 @@
 			selected = null;
 
 			const coordinates = getTileCoordinates(e);
-			const fromField = board[selectedCoordinates[0]][selectedCoordinates[1]];
 
-			board[selectedCoordinates[0]][selectedCoordinates[1]] = '';
-			board[coordinates[0]][coordinates[1]] = fromField;
+			boardState = board.attemptMove(selectedCoordinates, coordinates);
 		}
 	};
 
@@ -57,7 +59,7 @@
 
 <div class="w-screen h-screen flex justify-center items-center">
 	<div class="w-96 h-96 flex justify-center content-center flex-wrap">
-		{#each board as row, i}
+		{#each boardState as row, i}
 			{#each row as field, j}
 				<div
 					class="tile h-12 w-12 {((i % 2) + j) % 2 ? 'bg-red-400' : 'bg-white'}"
@@ -65,7 +67,7 @@
 				>
 					{#if field !== ''}
 						<div draggable="true" on:mousedown={(e) => dragStart(e)} on:mouseup={drop}>
-							<Piece pieceType={field} />
+							<Piece piece={field} />
 						</div>
 					{/if}
 				</div>

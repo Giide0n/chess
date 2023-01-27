@@ -1,9 +1,13 @@
 <script lang="ts">
-    import {PieceType} from "./PieceType";
+	import type { Piece } from './PieceType';
 
-    export let pieceType: PieceType
+	export let piece: Piece;
 
+	$: svgName = piece?.color + piece?.type;
 </script>
+
 <div class="h-full w-full flex justify-center content-center">
-    <img src="/src/lib/images/pieces/{pieceType}.svg">
+	{#if svgName}
+		<img src="/src/lib/images/pieces/{svgName}.svg" />
+	{/if}
 </div>

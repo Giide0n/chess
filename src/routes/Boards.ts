@@ -1,21 +1,55 @@
-import {PieceType as F} from "./PieceType";
+import { Color as C, PieceType as T } from './PieceType';
+import type { Piece } from './PieceType';
 
-export const EMPTY_BOARD = [
-    ['', '', '', '', '', '', '', ''],
-    ['', '', '', '', '', '', '', ''],
-    ['', '', '', '', '', '', '', ''],
-    ['', '', '', '', '', '', '', ''],
-    ['', '', '', '', '', '', '', ''],
-    ['', '', '', '', '', '', '', ''],
-    ['', '', '', '', '', '', '', ''],
-]
+export type BoardState = (Piece | undefined)[][];
 
-export const STANDARD_BOARD = [
-    [F.BLACK_ROOK, F.BLACK_BISHOP, F.BLACK_KNIGHT , F.BLACK_QUEEN, F.BLACK_KING, F.BLACK_KNIGHT, F.BLACK_BISHOP, F.BLACK_ROOK],
-    [F.BLACK_PAWN, F.BLACK_PAWN, F.BLACK_PAWN, F.BLACK_PAWN, F.BLACK_PAWN, F.BLACK_PAWN, F.BLACK_PAWN, F.BLACK_PAWN,],
-    ['', '', '', '', '', '', '', ''],
-    ['', '', '', '', '', '', '', ''],
-    ['', '', '', '', '', '', '', ''],
-    [F.WHITE_PAWN, F.WHITE_PAWN, F.WHITE_PAWN, F.WHITE_PAWN, F.WHITE_PAWN, F.WHITE_PAWN, F.WHITE_PAWN, F.WHITE_PAWN ],
-    [F.WHITE_ROOK, F.WHITE_BISHOP, F.WHITE_KNIGHT, F.WHITE_QUEEN, F.WHITE_KING, F.WHITE_KNIGHT, F.WHITE_BISHOP, F.WHITE_ROOK],
-]
+const WHITE_PAWN: Piece = { type: T.PAWN, color: C.WHITE };
+const WHITE_ROOK: Piece = { type: T.ROOK, color: C.WHITE };
+const WHITE_KNIGHT: Piece = { type: T.KNIGHT, color: C.WHITE };
+const WHITE_BISHOP: Piece = { type: T.BISHOP, color: C.WHITE };
+const WHITE_QUEEN: Piece = { type: T.QUEEN, color: C.WHITE };
+const WHITE_KING: Piece = { type: T.KING, color: C.WHITE };
+const BLACK_PAWN: Piece = { type: T.PAWN, color: C.BLACK };
+const BLACK_ROOK: Piece = { type: T.ROOK, color: C.BLACK };
+const BLACK_KNIGHT: Piece = { type: T.KNIGHT, color: C.BLACK };
+const BLACK_BISHOP: Piece = { type: T.BISHOP, color: C.BLACK };
+const BLACK_QUEEN: Piece = { type: T.QUEEN, color: C.BLACK };
+const BLACK_KING: Piece = { type: T.KING, color: C.BLACK };
+
+export const EMPTY_BOARD: BoardState = [
+	[undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined],
+	[undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined],
+	[undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined],
+	[undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined],
+	[undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined],
+	[undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined],
+	[undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined]
+];
+
+export const STANDARD_BOARD: BoardState = [
+	[
+		BLACK_ROOK,
+		BLACK_BISHOP,
+		BLACK_KNIGHT,
+		BLACK_QUEEN,
+		BLACK_KING,
+		BLACK_KNIGHT,
+		BLACK_BISHOP,
+		BLACK_ROOK
+	],
+	[BLACK_PAWN, BLACK_PAWN, BLACK_PAWN, BLACK_PAWN, BLACK_PAWN, BLACK_PAWN, BLACK_PAWN, BLACK_PAWN],
+	[undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined],
+	[undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined],
+	[undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined],
+	[WHITE_PAWN, WHITE_PAWN, WHITE_PAWN, WHITE_PAWN, WHITE_PAWN, WHITE_PAWN, WHITE_PAWN, WHITE_PAWN],
+	[
+		WHITE_ROOK,
+		WHITE_BISHOP,
+		WHITE_KNIGHT,
+		WHITE_QUEEN,
+		WHITE_KING,
+		WHITE_KNIGHT,
+		WHITE_BISHOP,
+		WHITE_ROOK
+	]
+];
