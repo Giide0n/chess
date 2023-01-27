@@ -6,11 +6,7 @@ import type { Piece } from './PieceType';
 import { Color, PieceType } from './PieceType';
 
 export class Board {
-	public readonly boardState: BoardState;
-
-	constructor() {
-		this.boardState = STANDARD_BOARD;
-	}
+	constructor(private readonly boardState: BoardState = STANDARD_BOARD) {}
 
 	getBoardState(): BoardState {
 		return this.boardState;
@@ -34,14 +30,15 @@ export class Board {
 		return legalMoves;
 	}
 
-	public attemptMove(from: Coordinates, to: Coordinates): BoardState {
-		if (this.isMoveValid(from, to)) {
-			return this.movePiece(from, to);
+	public attemptMove(from: Coordinates, to: Coordinates): boolean {
+		if (!this.isMoveValid(from, to)) {
+			return false;
 		}
-		return this.boardState;
+		this.movePiece(from, to);
+		return true;
 	}
 
-	private pieceAt(coordinates: Coordinates): Piece | undefined {
+	public pieceAt(coordinates: Coordinates): Piece | undefined {
 		return this.boardState[coordinates.row][coordinates.column];
 	}
 
@@ -188,11 +185,9 @@ export class Board {
 		return true;
 	}
 
-	private movePiece(from: Coordinates, to: Coordinates): BoardState {
+	private movePiece(from: Coordinates, to: Coordinates): void {
 		const piece = this.boardState[from.row][from.column];
 		this.boardState[from.row][from.column] = undefined;
 		this.boardState[to.row][to.column] = piece;
-
-		return this.boardState;
 	}
 }
