@@ -8,6 +8,9 @@
 
 <div class="h-full w-full flex justify-center content-center">
 	{#if svgName}
-		<img src="/src/lib/images/pieces/{svgName}.svg" />
+		<img
+			class="transition duration-200 hover:scale-110"
+			src="/src/lib/images/pieces/{svgName}.svg"
+		/>
 	{/if}
 </div>

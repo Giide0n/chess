@@ -16,6 +16,24 @@ export class Board {
 		return this.boardState;
 	}
 
+	public getLegalMoves(from: Coordinates): Coordinates[] {
+		if (!this.pieceAt(from)) {
+			return [];
+		}
+
+		const legalMoves: Coordinates[] = [];
+
+		this.boardState.forEach((row, rowIndex) => {
+			row.forEach((piece, columnIndex) => {
+				if (this.isMoveValid(from, { row: rowIndex, column: columnIndex })) {
+					legalMoves.push({ row: rowIndex, column: columnIndex });
+				}
+			});
+		});
+
+		return legalMoves;
+	}
+
 	public attemptMove(from: Coordinates, to: Coordinates): BoardState {
 		if (this.isMoveValid(from, to)) {
 			return this.movePiece(from, to);
@@ -70,7 +88,7 @@ export class Board {
 		}
 
 		if (from.row + direction === to.row && Math.abs(from.column - to.column) === 1) {
-			return this.pieceAt(to) !== undefined;
+			return this.pieceAt(to) !== undefined && this.checkForCapture(from, to);
 		}
 
 		return false;
@@ -105,7 +123,9 @@ export class Board {
 	}
 
 	private isBishopMoveValid(from: Coordinates, to: Coordinates): boolean {
-		if (from.row === to.row || from.column === to.column) {
+		const rowDifference = Math.abs(from.row - to.row);
+		const columnDifference = Math.abs(from.column - to.column);
+		if (rowDifference !== columnDifference) {
 			return false;
 		}
 

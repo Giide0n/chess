@@ -10,6 +10,7 @@
 	let boardState: BoardState = board.getBoardState();
 	let selected: unknown = undefined;
 	let selectedCoordinates: Coordinates | undefined = undefined;
+	let selectedLegalMoves: Coordinates[] = [];
 
 	const getTileCoordinates = (e): Coordinates => {
 		const coordinates = document
@@ -26,6 +27,9 @@
 	const dragStart = (e) => {
 		selectedCoordinates = getTileCoordinates(e);
 		selected = e.target;
+
+		setLegalMoves(selectedCoordinates);
+
 		drag(e);
 	};
 
@@ -45,11 +49,16 @@
 			selected.style.left = '0';
 
 			selected = null;
+			selectedLegalMoves = [];
 
 			const coordinates = getTileCoordinates(e);
 
 			boardState = board.attemptMove(selectedCoordinates, coordinates);
 		}
+	};
+
+	const setLegalMoves = (coordinates: Coordinates) => {
+		selectedLegalMoves = board.getLegalMoves(coordinates);
 	};
 
 	onMount(() => {
@@ -65,11 +74,18 @@
 					class="tile h-12 w-12 {((i % 2) + j) % 2 ? 'bg-red-400' : 'bg-white'}"
 					coordinates="{i},{j}"
 				>
-					{#if field !== ''}
-						<div draggable="true" on:mousedown={(e) => dragStart(e)} on:mouseup={drop}>
-							<Piece piece={field} />
-						</div>
-					{/if}
+					<div
+						on:mouseover={() => setLegalMoves({ row: i, column: j })}
+						class="h-full w-full {selectedLegalMoves.some((el) => el.row === i && el.column === j)
+							? 'opacity-50 bg-green-600'
+							: ''}"
+					>
+						{#if field !== undefined}
+							<div on:mousedown={(e) => dragStart(e)} on:mouseup={drop}>
+								<Piece piece={field} />
+							</div>
+						{/if}
+					</div>
 				</div>
 			{/each}
 		{/each}
