@@ -45,8 +45,8 @@
 		if (selected) {
 			e.preventDefault();
 
-			selected.style.top = e.clientY - 22 + 'px';
-			selected.style.left = e.clientX - 22 + 'px';
+			selected.style.top = e.clientY - selected.height / 2 + 'px';
+			selected.style.left = e.clientX - selected.width / 2 + 'px';
 		}
 	};
 
@@ -83,30 +83,34 @@
 	});
 </script>
 
-<h1 class="text-7xl">Current Player: {currentPlayer}</h1>
-<div class="w-screen h-screen flex justify-center items-center">
-	<div class="w-96 h-96 flex justify-center content-center flex-wrap">
-		{#each boardState as row, i}
-			{#each row as field, j}
-				<div
-					class="tile h-12 w-12 {((i % 2) + j) % 2 ? 'bg-red-400' : 'bg-white'}"
-					coordinates="{i},{j}"
-				>
+<div class="h-screen w-screen flex flex-col">
+	<h1 class="text-7xl text-center">Current Player: {currentPlayer}</h1>
+	<div class="w-full h-full flex justify-center items-center">
+		<div
+			class="h-[80vw] w-[80vw] min-h-[24rem] min-w-[24rem] max-h-[80vh] max-w-[80vh] grid grid-cols-8 auto-rows-fr"
+		>
+			{#each boardState as row, i}
+				{#each row as field, j}
 					<div
-						on:mouseover={() => setLegalMoves({ row: i, column: j })}
-						on:mouseup={drop}
-						class="h-full w-full {selectedLegalMoves.some((el) => el.row === i && el.column === j)
-							? 'opacity-50 bg-green-600'
-							: ''}"
+						class="tile h-full w-full {((i % 2) + j) % 2 ? 'bg-red-400' : 'bg-white'}"
+						coordinates="{i},{j}"
 					>
-						{#if field !== undefined}
-							<div on:mousedown={(e) => dragStart(e)}>
-								<Piece piece={field} />
-							</div>
-						{/if}
+						<div
+							on:mouseover={() => setLegalMoves({ row: i, column: j })}
+							on:mouseup={drop}
+							class={selectedLegalMoves.some((el) => el.row === i && el.column === j)
+								? 'opacity-50 bg-green-600'
+								: ''}
+						>
+							{#if field !== undefined}
+								<div on:mousedown={(e) => dragStart(e)} class="">
+									<Piece piece={field} />
+								</div>
+							{/if}
+						</div>
 					</div>
-				</div>
+				{/each}
 			{/each}
-		{/each}
+		</div>
 	</div>
 </div>
