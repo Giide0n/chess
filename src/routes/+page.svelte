@@ -12,6 +12,8 @@
 	let selectedCoordinates: Coordinates | undefined = undefined;
 	let selectedLegalMoves: Coordinates[] = [];
 
+	let currentPlayer = gameState.getCurrentPlayer();
+
 	const getTileCoordinates = (e): Coordinates | undefined => {
 		const coordinates = document
 			.elementsFromPoint(e.clientX, e.clientY)
@@ -64,6 +66,7 @@
 			}
 
 			gameState.attemptMove(selectedCoordinates, coordinates);
+			currentPlayer = gameState.getCurrentPlayer();
 			boardState = gameState.getBoardState();
 		}
 	};
@@ -80,6 +83,7 @@
 	});
 </script>
 
+<h1 class="text-7xl">Current Player: {currentPlayer}</h1>
 <div class="w-screen h-screen flex justify-center items-center">
 	<div class="w-96 h-96 flex justify-center content-center flex-wrap">
 		{#each boardState as row, i}
