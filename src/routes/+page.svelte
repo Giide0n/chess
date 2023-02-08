@@ -5,6 +5,8 @@
 	import type { BoardState } from './Boards';
 	import { GameState } from './GameState';
 
+	import init, { greet } from 'rust';
+
 	const gameState: GameState = new GameState();
 
 	let boardState: BoardState = gameState.getBoardState();
@@ -78,8 +80,9 @@
 		selectedLegalMoves = gameState.getLegalMoves(coordinates);
 	};
 
-	onMount(() => {
+	onMount(async () => {
 		document.addEventListener('mousemove', drag);
+		init().then(() => greet());
 	});
 </script>
 
