@@ -1,49 +1,60 @@
 <script lang="ts">
 	import Piece from './Piece.svelte';
 	import { onMount } from 'svelte';
-	import type { Coordinates } from './Coordinates';
-	import type { BoardState } from './Boards';
 	import { GameState } from './GameState';
 
-	import init, { greet } from 'rust';
+	import init, { Game } from 'rust';
 
 	const gameState: GameState = new GameState();
+	let game: Game;
+	let board: string[] = [];
 
-	let boardState: BoardState = gameState.getBoardState();
-	let selected: unknown = undefined;
-	let selectedCoordinates: Coordinates | undefined = undefined;
-	let selectedLegalMoves: Coordinates[] = [];
+	let selected: any = undefined;
+	let selectedCoordinates: number | undefined = undefined;
+	let selectedLegalMoves: number[] = [];
 
-	let currentPlayer = gameState.getCurrentPlayer();
+	let currentPlayer: string;
 
-	const getTileCoordinates = (e): Coordinates | undefined => {
+	onMount(async () => {
+		document.addEventListener('mousemove', drag);
+		init().then(() => {
+			game = new Game();
+			currentPlayer = game.get_current_player();
+			board = game.get_board();
+
+			console.log(board);
+		});
+	});
+
+	const getTileCoordinates = (e: any): number | undefined => {
 		const coordinates = document
 			.elementsFromPoint(e.clientX, e.clientY)
 			.find((el) => {
 				return el.classList.contains('tile');
 			})
-			.getAttribute('coordinates')
-			.split(',')
-			.map((el) => parseInt(el));
+			?.getAttribute('data-coordinates');
 
 		if (!coordinates) {
 			return undefined;
 		}
 
-		return { row: coordinates[0], column: coordinates[1] };
+		return parseInt(coordinates);
 	};
 
-	const dragStart = (e) => {
+	const dragStart = (e: any) => {
 		selectedCoordinates = getTileCoordinates(e);
 		selected = e.target;
 
 		selected.style.position = 'absolute';
-		setLegalMoves(selectedCoordinates);
+
+		if (selectedCoordinates !== undefined) {
+			setLegalMoves(selectedCoordinates);
+		}
 
 		drag(e);
 	};
 
-	const drag = (e) => {
+	const drag = (e: any) => {
 		if (selected) {
 			e.preventDefault();
 
@@ -52,7 +63,7 @@
 		}
 	};
 
-	const drop = (e) => {
+	const drop = (e: any) => {
 		if (selected) {
 			selected.style.position = 'static';
 			selected.style.top = '0';
@@ -63,27 +74,23 @@
 
 			const coordinates = getTileCoordinates(e);
 
-			if (!coordinates) {
+			if (coordinates === undefined || selectedCoordinates === undefined) {
 				return;
 			}
 
-			gameState.attemptMove(selectedCoordinates, coordinates);
-			currentPlayer = gameState.getCurrentPlayer();
-			boardState = gameState.getBoardState();
+			// gameState.attemptMove(selectedCoordinates, coordinates);
+			game.attempt_move(selectedCoordinates, coordinates);
+			currentPlayer = game.get_current_player();
+			board = game.get_board();
 		}
 	};
 
-	const setLegalMoves = (coordinates: Coordinates) => {
+	const setLegalMoves = (coordinates: number) => {
 		if (selected) {
 			return;
 		}
-		selectedLegalMoves = gameState.getLegalMoves(coordinates);
+		// selectedLegalMoves = gameState.getLegalMoves(coordinates);
 	};
-
-	onMount(async () => {
-		document.addEventListener('mousemove', drag);
-		init().then(() => greet());
-	});
 </script>
 
 <div class="h-screen w-screen flex flex-col">
@@ -92,27 +99,26 @@
 		<div
 			class="h-[80vw] w-[80vw] min-h-[24rem] min-w-[24rem] max-h-[80vh] max-w-[80vh] grid grid-cols-8 auto-rows-fr"
 		>
-			{#each boardState as row, i}
-				{#each row as field, j}
+			{#each board as field, i}
+				<div
+					class="tile h-full w-full {((Math.floor(i / 8) % 2) + (i % 2)) % 2
+						? 'bg-red-400'
+						: 'bg-white'}"
+					data-coordinates={i}
+				>
+					<!-- svelte-ignore a11y-mouse-events-have-key-events -->
 					<div
-						class="tile h-full w-full {((i % 2) + j) % 2 ? 'bg-red-400' : 'bg-white'}"
-						coordinates="{i},{j}"
+						on:mouseover={() => setLegalMoves(i)}
+						on:mouseup={drop}
+						class={selectedLegalMoves.some((x) => x === i) ? 'opacity-50 bg-green-600' : ''}
 					>
-						<div
-							on:mouseover={() => setLegalMoves({ row: i, column: j })}
-							on:mouseup={drop}
-							class={selectedLegalMoves.some((el) => el.row === i && el.column === j)
-								? 'opacity-50 bg-green-600'
-								: ''}
-						>
-							{#if field !== undefined}
-								<div on:mousedown={(e) => dragStart(e)} class="">
-									<Piece piece={field} />
-								</div>
-							{/if}
-						</div>
+						{#if field !== undefined}
+							<div on:mousedown={(e) => dragStart(e)} class="">
+								<Piece piece={field} />
+							</div>
+						{/if}
 					</div>
-				{/each}
+				</div>
 			{/each}
 		</div>
 	</div>
