@@ -18,14 +18,70 @@ const BLACK_QUEEN: &str = "bq";
 const BLACK_KING: &str = "bk";
 
 const NEW_BOARD: [&str; 64] = [
-    BLACK_ROOK, BLACK_KNIGHT, BLACK_BISHOP, BLACK_QUEEN, BLACK_KING, BLACK_BISHOP, BLACK_KNIGHT, BLACK_ROOK,
-    BLACK_PAWN, BLACK_PAWN, BLACK_PAWN, BLACK_PAWN, BLACK_PAWN, BLACK_PAWN, BLACK_PAWN, BLACK_PAWN,
-    EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY,
-    EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY,
-    EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY,
-    EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY,
-    WHITE_PAWN, WHITE_PAWN, WHITE_PAWN, WHITE_PAWN, WHITE_PAWN, WHITE_PAWN, WHITE_PAWN, WHITE_PAWN,
-    WHITE_ROOK, WHITE_KNIGHT, WHITE_BISHOP, WHITE_QUEEN, WHITE_KING, WHITE_BISHOP, WHITE_KNIGHT, WHITE_ROOK
+    BLACK_ROOK,
+    BLACK_KNIGHT,
+    BLACK_BISHOP,
+    BLACK_QUEEN,
+    BLACK_KING,
+    BLACK_BISHOP,
+    BLACK_KNIGHT,
+    BLACK_ROOK,
+    BLACK_PAWN,
+    BLACK_PAWN,
+    BLACK_PAWN,
+    BLACK_PAWN,
+    BLACK_PAWN,
+    BLACK_PAWN,
+    BLACK_PAWN,
+    BLACK_PAWN,
+    EMPTY,
+    EMPTY,
+    EMPTY,
+    EMPTY,
+    EMPTY,
+    EMPTY,
+    EMPTY,
+    EMPTY,
+    EMPTY,
+    EMPTY,
+    EMPTY,
+    EMPTY,
+    EMPTY,
+    EMPTY,
+    EMPTY,
+    EMPTY,
+    EMPTY,
+    EMPTY,
+    EMPTY,
+    EMPTY,
+    EMPTY,
+    EMPTY,
+    EMPTY,
+    EMPTY,
+    EMPTY,
+    EMPTY,
+    EMPTY,
+    EMPTY,
+    EMPTY,
+    EMPTY,
+    EMPTY,
+    EMPTY,
+    WHITE_PAWN,
+    WHITE_PAWN,
+    WHITE_PAWN,
+    WHITE_PAWN,
+    WHITE_PAWN,
+    WHITE_PAWN,
+    WHITE_PAWN,
+    WHITE_PAWN,
+    WHITE_ROOK,
+    WHITE_KNIGHT,
+    WHITE_BISHOP,
+    WHITE_QUEEN,
+    WHITE_KING,
+    WHITE_BISHOP,
+    WHITE_KNIGHT,
+    WHITE_ROOK,
 ];
 
 #[wasm_bindgen]
@@ -38,7 +94,7 @@ pub struct Game {
 impl Game {
     #[wasm_bindgen(constructor)]
     pub fn new() -> Game {
-        Game{
+        Game {
             is_white_to_move: true,
             board: NEW_BOARD.clone(),
         }
@@ -47,12 +103,14 @@ impl Game {
     pub fn get_current_player(&self) -> String {
         match self.is_white_to_move {
             true => "white".to_string(),
-            false => "black".to_string()
+            false => "black".to_string(),
         }
     }
 
     pub fn get_board(&self) -> Array {
-        self.board.clone().into_iter()
+        self.board
+            .clone()
+            .into_iter()
             .map(|x| JsValue::from_str(x))
             .collect::<Array>()
     }
@@ -70,6 +128,10 @@ impl Game {
     }
 
     fn move_piece(&mut self, from: &u8, to: &u8) {
+        let piece: &str = &self.board[from.clone() as usize];
+        self.board[from.clone() as usize] = EMPTY;
+        self.board[to.clone() as usize] = piece;
+
         self.is_white_to_move = !self.is_white_to_move;
     }
 }
